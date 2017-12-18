@@ -9,7 +9,7 @@
  * 	$objAlert->CssClass = '+' . Bootstrap::AlertSuccess;
  *
  * Use Display or Visible to show or hide the alert as needed. Or, set the
- * Dismissable attribute.
+ * Dismissible attribute.
  *
  * Since its a QPanel, you can put text, template or child controls in it.
  *
@@ -17,6 +17,9 @@
  *
  * Call Close() to close the dialog manually.
  *
+ *
+ * @property bool $Dismissible 
+ * @property bool $HasCloseButton  
  */
 namespace QCubed\Plugin\Bootstrap;
 
@@ -48,7 +51,7 @@ class Alert_ClosedEvent extends \QEvent {
 class Alert extends \QPanel {
 	protected $strCssClass = 'alert fade in';
 
-	protected $blnDismissable = false;
+	protected $blnDismissible = false;
 
 	public function __construct ($objParent, $strControlId = null) {
 		parent::__construct ($objParent, $strControlId);
@@ -60,7 +63,7 @@ class Alert extends \QPanel {
 	protected function GetInnerHtml() {
 		$strText = parent::GetInnerHtml();
 
-		if ($this->blnDismissable) {
+		if ($this->blnDismissible) {
 			$strText = \Qhtml::RenderTag('button',
 				['type'=>'button',
 				'class'=>'close',
@@ -74,7 +77,7 @@ class Alert extends \QPanel {
 	}
 
 	public function GetEndScript() {
-		if ($this->blnDismissable) {
+		if ($this->blnDismissible) {
 			\QApplication::ExecuteControlCommand($this->ControlId, 'on', 'closed.bs.alert',
 				new \QJsClosure("qcubed.recordControlModification ('{$this->ControlId}', '_Visible', false)"), \QJsPriority::High);
 		}
@@ -93,9 +96,9 @@ class Alert extends \QPanel {
 
 	public function __get($strName) {
 		switch ($strName) {
-			case "Dismissable":
+			case "Dismissible":
 			case "HasCloseButton": // QCubed synonym
-				return $this->blnDismissable;
+				return $this->blnDismissible;
 
 			default:
 				try {
@@ -109,17 +112,17 @@ class Alert extends \QPanel {
 
 	public function __set($strName, $mixValue) {
 		switch ($strName) {
-			case 'Dismissable':
+			case 'Dismissible':
 			case "HasCloseButton": // QCubed synonym
-				$blnDismissable = QType::Cast($mixValue, QType::Boolean);
-				if ($blnDismissable != $this->blnDismissable) {
-					$this->blnDismissable = $blnDismissable;
+				$blnDismissible = QType::Cast($mixValue, QType::Boolean);
+				if ($blnDismissible != $this->blnDismissible) {
+					$this->blnDismissible = $blnDismissible;
 					$this->blnModified = true;
-					if ($blnDismissable) {
-						$this->AddCssClass(Bootstrap::AlertDismissable);
+					if ($blnDismissible) {
+						$this->AddCssClass(Bootstrap::AlertDismissible);
 						Bootstrap::LoadJS($this);
 					} else {
-						$this->RemoveCssClass(Bootstrap::AlertDismissable);
+						$this->RemoveCssClass(Bootstrap::AlertDismissible);
 					}
 				}
 				break;
